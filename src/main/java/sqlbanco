@@ -1,0 +1,35 @@
+CREATE DATABASE "curso-jsp-v4"
+    WITH
+    OWNER = postgres
+    ENCODING = 'UTF8'
+    LC_COLLATE = 'English_United Kingdom.1252'
+    LC_CTYPE = 'English_United Kingdom.1252'
+    TABLESPACE = pg_default
+    CONNECTION LIMIT = -1
+    IS_TEMPLATE = False;
+    
+    
+    
+    
+CREATE TABLE public.model_login
+(
+  login character varying(200) NOT NULL,
+  senha character varying(200) NOT NULL,
+  CONSTRAINT login_unique UNIQUE (login)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE public.model_login
+  OWNER TO postgres;
+
+
+
+
+ALTER TABLE public.model_login
+  OWNER TO postgres;
+  
+  
+  INSERT INTO public.model_login(
+            login, senha)
+    VALUES ( 'admin', 'admin');
