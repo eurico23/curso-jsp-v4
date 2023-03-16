@@ -31,10 +31,6 @@ public class ServLetUsuarioControler extends ServletGenericUtil {
        
 	private DAOUsuarioRepository daoUsuarioRepository = new DAOUsuarioRepository();
 
-
-	
-
-
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		try {
@@ -49,6 +45,7 @@ public class ServLetUsuarioControler extends ServletGenericUtil {
 				request.setAttribute("modelLogins", modelLogins);
 				
 				request.setAttribute("msg", "Excluido com sucesso!");
+				request.setAttribute("totalPagina", daoUsuarioRepository.totalPagina(this.getUserLogado(request)));
 				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
 
 				
@@ -80,10 +77,12 @@ public class ServLetUsuarioControler extends ServletGenericUtil {
 				
 				ModelLogin modelLogin = daoUsuarioRepository.consultaUsuarioID(id, super.getUserLogado(request)); /*call method that connects and search database*/
 				
-				
+				List<ModelLogin> modelLogins = daoUsuarioRepository.consultaUsuarioList(super.getUserLogado(request));
+				request.setAttribute("modelLogins", modelLogins); 
 				
 				request.setAttribute("msg", "Usuario em edicao"); /*display message on the screen*/
 				request.setAttribute("modolLogin", modelLogin); /*set os atributos qu evao prencher a tela*/
+				request.setAttribute("totalPagina", daoUsuarioRepository.totalPagina(this.getUserLogado(request)));
 				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
 
 			}
@@ -93,6 +92,8 @@ public class ServLetUsuarioControler extends ServletGenericUtil {
 				
 				request.setAttribute("msg", "Usuario em edicao"); /*display message on the screen*/
 				request.setAttribute("modelLogins", modelLogins); /*set os atributos qu evao prencher a tela*/
+				
+				request.setAttribute("totalPagina", daoUsuarioRepository.totalPagina(this.getUserLogado(request)));
 				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
 			
 			}
@@ -108,10 +109,21 @@ public class ServLetUsuarioControler extends ServletGenericUtil {
 					response.getOutputStream().write(new Base64().decodeBase64(modelLogin.getFotouser().split("\\,")[1]));
 				}
 			}
+			else if(acao !=null && !acao.isEmpty() && acao.equalsIgnoreCase("paginar")) {
+				Integer offset = Integer.parseInt(request.getParameter("pagina"));
+				
+				List<ModelLogin> modelLogins = daoUsuarioRepository.consultaUsuarioListPaginada(this.getUserLogado(request), offset);
+				
+				request.setAttribute("modelLogins", modelLogins);
+				request.setAttribute("totalPagina", daoUsuarioRepository.totalPagina(this.getUserLogado(request)));
+				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
+			}
 			
 			
 			else {
-				
+				List<ModelLogin> modelLogins = daoUsuarioRepository.consultaUsuarioList(super.getUserLogado(request));
+				request.setAttribute("modelLogins", modelLogins);
+				request.setAttribute("totalPagina", daoUsuarioRepository.totalPagina(this.getUserLogado(request)));
 				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
 			}
 
@@ -137,6 +149,13 @@ public class ServLetUsuarioControler extends ServletGenericUtil {
 		String perfil = request.getParameter("perfil"); //(request.getParameter("perfil") get the perfil from the html form with output name="perfil"
 		String sexo = request.getParameter("sexo"); //(request.getParameter("sexo") get the sexo from the html form with output name="sexo"
 		
+		String cep = request.getParameter("cep");
+		String logradouro = request.getParameter("logradouro");
+		String bairro = request.getParameter("bairro");
+		String localidade = request.getParameter("localidade");
+		String uf = request.getParameter("uf");
+		String numero = request.getParameter("numero");
+		
 		ModelLogin modelLogin = new ModelLogin(); // create new object of the class ModelLogin
 		
 		
@@ -147,6 +166,16 @@ public class ServLetUsuarioControler extends ServletGenericUtil {
 		modelLogin.setSenha(senha);
 		modelLogin.setPerfil(perfil);
 		modelLogin.setSexo(sexo);
+		
+		modelLogin.setCep(cep);
+		modelLogin.setLogradouro(logradouro);
+		modelLogin.setBairro(bairro);
+		modelLogin.setLocalidade(localidade);
+		modelLogin.setUf(uf);
+		modelLogin.setNumero(numero);
+		
+		
+		
 		
 		if (ServletFileUpload.isMultipartContent(request)) {
 			
@@ -172,10 +201,11 @@ public class ServLetUsuarioControler extends ServletGenericUtil {
 			modelLogin = daoUsuarioRepository.gravarUsuario(modelLogin, super.getUserLogado(request));
 		}
 		
-		
-		
+		List<ModelLogin> modelLogins = daoUsuarioRepository.consultaUsuarioList(super.getUserLogado(request));
+		request.setAttribute("modelLogins", modelLogins);
 		request.setAttribute("msg", msg);
 		request.setAttribute("modolLogin", modelLogin);
+		request.setAttribute("totalPagina", daoUsuarioRepository.totalPagina(this.getUserLogado(request)));
 		request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
 
 		}catch(Exception e) {
