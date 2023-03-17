@@ -263,10 +263,10 @@ if (modelLogin != null && modelLogin.getSexo().equals("FEMININO")) {
 														int totalPagina = (int) request.getAttribute("totalPagina");
 														for (int p = 0; p < totalPagina; p++) {
 															String url = request.getContextPath() + "/ServLetUsuarioControler?acao=paginar&pagina=" + (p * 5);
-															out.print("<li class=\"page-item\"><a class=\"page-link\" href=\""+ url +"\">"+(p + 1)+"</a></li>");
+															out.print("<li class=\"page-item\"><a class=\"page-link\" href=\"" + url + "\">" + (p + 1) + "</a></li>");
 														}
 														%>
-														
+
 													</ul>
 												</nav>
 
